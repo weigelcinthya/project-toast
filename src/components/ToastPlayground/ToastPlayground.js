@@ -1,7 +1,8 @@
 import React from 'react';
 
 import Button from '../Button';
-import Toast from '../Toast';
+import ToastShelf from '../ToastShelf';
+
 import styles from './ToastPlayground.module.css';
 
 const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
@@ -10,7 +11,19 @@ function ToastPlayground() {
 
   const [message, setMessage ] = React.useState('');
   const [variant, setVariant ] = React.useState('notice');
-  const [showToast, setShowToast] = React.useState(false);
+  const [messages, setMessages] = React.useState([]);
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    setMessages([...messages, {id: crypto.randomUUID(), message, variant}]);
+    setMessage('')
+    setVariant('notice')
+  }
+
+  const handleDismiss = (id) => {
+    const updatedMessages = messages.filter(message => message.id !== id);
+    setMessages(updatedMessages);
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -18,9 +31,10 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      { showToast && (<Toast message={message} variant={variant} setShowToast={setShowToast} /> )}
-      
-      <div className={styles.controlsWrapper}>
+      { messages.length > 0 && (<ToastShelf messages={messages} handleClose={handleDismiss} /> )}
+      <form className={styles.controlsWrapper}
+        onSubmit={handleFormSubmit}
+      >
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -65,11 +79,10 @@ function ToastPlayground() {
             className={`${styles.inputWrapper} ${styles.radioWrapper}`}
           >
             <Button
-              onClick={() => setShowToast(true)}
             >Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

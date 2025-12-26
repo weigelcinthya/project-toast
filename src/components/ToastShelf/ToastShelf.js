@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Toast from '../Toast';
 import styles from './ToastShelf.module.css';
 
-function ToastShelf() {
+function ToastShelf({messages, handleClose}) {
   return (
     <ol className={styles.wrapper}>
-      <li className={styles.toastWrapper}>
-        <Toast variant="notice">Example notice toast</Toast>
-      </li>
-      <li className={styles.toastWrapper}>
-        <Toast variant="error">Example error toast</Toast>
-      </li>
+      {messages.length > 0 && messages.map(message => (
+        <li className={styles.toastWrapper} key={message.id}>
+          <Toast toast={message} handleClose={handleClose}/>
+        </li>
+      ))}
     </ol>
   );
 }
